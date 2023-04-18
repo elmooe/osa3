@@ -1,16 +1,23 @@
 const express = require('express')
 const nodemon = require('nodemon')
+const morgan = require('morgan')
 const app = express()
 app.use(express.json())
+app.use(morgan('tiny'))
 
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+
+function morganBody(req, res) {
+    if (req.method === 'POST') {
+      return JSON.stringify(req.body)
+    }
+    return ''
+  }
+  morgan.token('body', morganBody)
 
 const generateId = () => {
     const maxId = persons.length > 0 ? Math.max(...persons.map(person => person.id)) : 0
-    return maxId + 1
-}
-
-const generateNumber = () => {
-    return Math.floor(Math.random() * (39999999 - 39000000 + 1)) + 39000000;
+    return maxId + Math.floor(Math.random() * (10000 - maxId + 1)) + maxId
 }
 
 let persons = [
@@ -66,7 +73,7 @@ app.delete('/api/persons/:id', (request, response) => {
   app.post('/api/persons', (request, responce) => {
     const body = request.body
 
-    if (!body.name || persons.some(person => person.name === body.name)) {
+    if (!body.name || persons.some(person => person.name === body.name) || !body.number) {
         return responce.status(400).json({
             error: 'name must be unique'
         })
@@ -74,7 +81,7 @@ app.delete('/api/persons/:id', (request, response) => {
     const person = {
         id: generateId(),
         name: body.name,
-        number: generateNumber()
+        number: body.number
     }
 
     persons = persons.concat(person)
