@@ -2,10 +2,12 @@ const express = require('express')
 const nodemon = require('nodemon')
 const morgan = require('morgan')
 const app = express()
+const cors = require('cors')
 app.use(express.json())
 app.use(morgan('tiny'))
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
+app.use(cors())
 
 function morganBody(req, res) {
     if (req.method === 'POST') {
@@ -88,7 +90,7 @@ app.delete('/api/persons/:id', (request, response) => {
     responce.json(person)
   })
 
-const PORT = 3001
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`)
-})
+  const PORT = process.env.PORT || 3001
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`)
+  })
