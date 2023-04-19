@@ -8,6 +8,7 @@ app.use(morgan('tiny'))
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :body'))
 app.use(cors())
+app.use(express.static('build'))
 
 function morganBody(req, res) {
     if (req.method === 'POST') {
