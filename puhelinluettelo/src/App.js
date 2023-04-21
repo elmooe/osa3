@@ -62,10 +62,21 @@ const App = () => {
       
       personService
       .create(newPerson)
-      .then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson))
+      .then(createdPerson => {
+        setPersons(persons.concat(createdPerson))
         setNotificationMessage(`Added ${newPerson.name}`)
         setNotificationStyle('green')
+        setTimeout(() => {
+          setNotificationMessage('')
+        }, 3000)
+
+        setNewName('')
+        setNewNumber('')
+      })
+      .catch(error => {
+        console.log(error.response.data)
+        setNotificationMessage(`Person validation failed: ${JSON.stringify(error.response.data)}`)
+        setNotificationStyle('red')
         setTimeout(() => {
           setNotificationMessage('')
         }, 3000)
