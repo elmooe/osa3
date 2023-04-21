@@ -39,7 +39,7 @@ const App = () => {
     if (persons.some(person => person.name === newName)) {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
         const replacedNumber = {...personToUpdateNumber, number: newNumber}
-
+  
         personService
         .updateNumber(personToUpdateNumber.id, replacedNumber)
         .then(returnedPerson => {
@@ -49,10 +49,13 @@ const App = () => {
           setTimeout(() => {
             setNotificationMessage('')
           }, 3000)
-
+  
           setNewName('')
           setNewNumber('')
         })
+      } else {
+        setNewName('')
+        setNewNumber('')
       }
     } else {
       const newPerson = {
@@ -69,7 +72,7 @@ const App = () => {
         setTimeout(() => {
           setNotificationMessage('')
         }, 3000)
-
+  
         setNewName('')
         setNewNumber('')
       })
@@ -80,12 +83,13 @@ const App = () => {
         setTimeout(() => {
           setNotificationMessage('')
         }, 3000)
-
+  
         setNewName('')
         setNewNumber('')
       })
     }
   }
+  
 
   const deleteFromList = (id) => {
     const choosedPerson = persons.find(p => p.id === id)
@@ -93,21 +97,20 @@ const App = () => {
       personService
       .deletePerson(choosedPerson.id)
       .then(() => {
+        setNotificationMessage(`${choosedPerson.name}'s has been deleted`)
+        setNotificationStyle('green')
+        setTimeout(() => {
+          setNotificationMessage('')
+        }, 3000)
         setPersons(persons.filter(person => person.id !== id))
       })
       .catch(error => {
         setNotificationMessage(`Information of ${choosedPerson.name} has already been removed from server`)
         setNotificationStyle('red')
-          setTimeout(() => {
-            setNotificationMessage('')
-          }, 3000)
-      })
-
-      setNotificationMessage(`${choosedPerson.name}'s has been deleted`)
-      setNotificationStyle('green')
         setTimeout(() => {
           setNotificationMessage('')
         }, 3000)
+      })
     }
   }
   
