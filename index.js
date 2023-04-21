@@ -3,7 +3,6 @@ const express = require('express')
 const morgan = require('morgan')
 const app = express()
 const cors = require('cors')
-const mongoose = require('mongoose')
 const Person = require('./models/person')
 app.use(express.json())
 app.use(morgan('tiny'))
@@ -13,12 +12,12 @@ app.use(cors())
 app.use(express.static('build'))
 
 function morganBody(req, res) {
-    if (req.method === 'POST') {
-      return JSON.stringify(req.body)
-    }
-    return ''
+  if (req.method === 'POST') {
+    return JSON.stringify(req.body)
   }
-  morgan.token('body', morganBody)
+  return ''
+}
+morgan.token('body', morganBody)
 
 const errorHandler = (error, request, responce, next) => {
   console.error(error.message)
@@ -33,10 +32,10 @@ const errorHandler = (error, request, responce, next) => {
 }
 
 app.get('/info', (request, responce, next) => {
-    Person.countDocuments({}).then(count => {
-      const date = new Date()
-      responce.send(`Phonebook has info for ${count} people </br> ${date}`)
-    })
+  Person.countDocuments({}).then(count => {
+    const date = new Date()
+    responce.send(`Phonebook has info for ${count} people </br> ${date}`)
+  })
 })
 
 app.get('/api/persons', (request, responce) => {
@@ -81,8 +80,7 @@ app.post('/api/persons', (request, responce, next) => {
 
   person.save().then(savedPerson => {
     responce.json(savedPerson)
-  })
-  .catch((error) => next(error))
+  }).catch((error) => next(error))
 })
 
 app.put('/api/persons/:id', (request, responce, next) => {
@@ -93,11 +91,11 @@ app.put('/api/persons/:id', (request, responce, next) => {
     number: body.number,
   }
 
-Person.findByIdAndUpdate(request.params.id, person, { new: true })
-  .then(updatedPerson => {
-    responce.json(updatedPerson)
-  })
-  .catch(error => next(error))
+  Person.findByIdAndUpdate(request.params.id, person, { new: true })
+    .then(updatedPerson => {
+      responce.json(updatedPerson)
+    })
+    .catch(error => next(error))
 })
   
 app.use(errorHandler)

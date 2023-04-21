@@ -25,7 +25,7 @@ const numberSchema = new mongoose.Schema({
     required: true,
     validate: {
       validator: function(v) {
-        return /\d{3}-\d{8} || \d{2}-\d{9}/.test(v);
+        return /\d{3}-\d{8} || \d{2}-\d{9}/.test(v)
       }
     }
   }
